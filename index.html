@@ -1,116 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
-  <title>Drive Video Gallery</title>
+  <title>Lael Family Video Archives</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #111;
-      color: #eee;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 22px;
-    }
-
-    .player {
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto 20px auto;
-      background: #000;
-      aspect-ratio: 16/9;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    .thumb {
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.2s;
-    }
-
-    .thumb:hover {
-      transform: scale(1.05);
-    }
-
-    .thumb img {
-      width: 100%;
-      border-radius: 8px;
-    }
-
-    .thumb span {
-      display: block;
-      margin-top: 6px;
-      font-size: 13px;
-      color: #bbb;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
-  <h1>🎬 My Drive Video Gallery</h1>
+  <header>🎬 Lael Family Video Archives</header>
 
-  <div class="player">
-    <iframe id="player" allow="autoplay; fullscreen"></iframe>
-  </div>
+  <main>
+    <div class="left-column">
+      <div class="player">
+        <iframe id="player" allow="autoplay; fullscreen"></iframe>
+      </div>
+      <div class="description" id="video-description">
+        Loading description...
+      </div>
+    </div>
 
-  <div class="grid" id="grid"></div>
+    <div class="right-column">
+      <input type="text" id="search-bar" placeholder="Search videos...">
+      <div id="video-list"></div>
+    </div>
+  </main>
 
-  <script>
-    fetch('videos.json')
-      .then(res => res.json())
-      .then(data => {
-        const videos = data.files || [];
-        const grid = document.getElementById('grid');
-        const player = document.getElementById('player');
-
-        if (videos.length === 0) {
-          grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;">No videos found.</p>';
-          return;
-        }
-
-        videos.forEach(v => {
-          const div = document.createElement('div');
-          div.className = 'thumb';
-          div.innerHTML = `
-            <img src="${v.thumbnailLink || 'https://via.placeholder.com/180x100?text=Video'}" alt="${v.name}">
-            <span>${v.name}</span>
-          `;
-          div.onclick = () => {
-            player.src = `https://drive.google.com/file/d/${v.id}/preview`;
-          };
-          grid.appendChild(div);
-        });
-
-        // Auto-load first video
-        player.src = `https://drive.google.com/file/d/${videos[0].id}/preview`;
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to load videos. Make sure videos.json exists and the IDs are valid.');
-      });
-  </script>
+  <script src="./index.js"></script>
 </body>
 
 </html>
