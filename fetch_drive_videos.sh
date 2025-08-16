@@ -20,9 +20,19 @@ OUTPUT="videos.json"
 # Google Drive API endpoint
 URL="https://www.googleapis.com/drive/v3/files?q='${FOLDER_ID}'+in+parents+and+mimeType+contains+'video/'&fields=files(id,name,mimeType,thumbnailLink)&key=${API_KEY}"
 
-# Fetch and pretty-print JSON
 echo "📡 Fetching videos from folder $FOLDER_ID ..."
-curl -s "$URL" | jq . >"$OUTPUT"
+
+curl -s "$URL" | jq '
+.files |= map(
+  .name |= (
+    if type == "string" then
+      sub("\\.mp4$";"")
+    else
+      .
+    end
+  )
+)
+' >"$OUTPUT"
 
 if [[ $? -eq 0 ]]; then
 	echo "✅ Video list saved to $OUTPUT"
